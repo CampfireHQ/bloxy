@@ -1,5 +1,5 @@
 describe("Tests test", function () {
-	it("should be 3", function () {
-		expect(1+2).toBe(3);
+	it("should be 4", function () {
+		expect(1+3).toBe(4);
 	});
 });
