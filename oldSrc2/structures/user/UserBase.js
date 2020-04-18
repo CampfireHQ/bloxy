@@ -11,7 +11,7 @@ class UserBase {
 		this._validate = client._validate;
 	}
 
-	update () {
+	refresh () {
 		return this.client.getUser(this.id);
 	}
 
@@ -39,7 +39,7 @@ class UserBase {
 		return this.apis.friends.unfriendUser(this.id);
 	}
 
-	isFollowing (user) {
+	isFollowingUser (user) {
 		return this._validate.user.validate.identifier(user)
 			.then(id => this.apis.api.isUserFollowing({
 				userId: this.id,

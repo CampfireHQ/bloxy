@@ -9,5 +9,12 @@
   },
   "files": [
     "typings/index.d.ts"
+  ],
+  "declaration": true,
+  "exclude": [
+    "node_modules",
+    "oldSrc",
+    "oldSrc2",
+    "tests"
   ]
 }

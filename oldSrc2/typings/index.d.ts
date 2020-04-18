@@ -40,7 +40,7 @@ export class Client extends ClientBase {
     public debugEnabled: boolean;
     public ws: SocketConnection;
 
-    constructor(options: ClientConstructorOptions);
+    constructor(options?: ClientConstructorOptions);
 
     public getGroup(group: GroupIdentifier): Promise<Group>;
 
@@ -208,21 +208,107 @@ class UserPartial extends UserBase {
 }
 
 class User extends UserPartial {
-    public status: string;
-    public blurb: string;
-    public joinDate: Date;
-    public accountAge: number;
-    public friendsCount: number;
-    public followersCount: number;
-    public followingCount: number;
-    public headshotImage: string;
-    public canMessage: boolean;
-    public canFollow: boolean;
-    public canTrade: boolean;
-    public canSeeFavorites: boolean;
-    public canSeeInventory: boolean;
-    public areFriends: boolean;
-    public canSendFriendRequest: boolean;
+    /**
+     * The user's profile status (the short one)
+     */
+    public status: string | undefined;
+    /**
+     * The date when the user's status was made / updated
+     */
+    public statusUpdated: Date | undefined;
+    /**
+     * The id that indicates to a given presence type
+     */
+    public presenceType: string | undefined;
+    /**
+     * The last location indicates where the user was last (in a game, studio, idle, etc.)
+     */
+    public lastLocation: string | undefined;
+    /**
+     * The place id they're currently in (e.g. studio or game)
+     */
+    public userPlaceId: string | number;
+    /**
+     * The blurb (profile description) of the user's profile
+     */
+    public blurb: string | undefined;
+    /**
+     * The date when the user signed up / joined Roblox
+     */
+    public joinDate: Date | undefined;
+    /**
+     * The amount of days since the user has signed up / been on Roblox
+     */
+    public accountAge: number | undefined;
+    /**
+     * The friends count of the user (how many friends they have)
+     */
+    public friendsCount: number | undefined;
+    /**
+     * The followers count of the user
+     */
+    public followersCount: number | undefined;
+    /**
+     * The following count for the user
+     */
+    public followingCount: number | undefined;
+    /**
+     * The headshot image of the user (a URL)
+     */
+    public headshotImage: string | undefined;
+    /**
+     * If the authenticated user can send a message to the user
+     */
+    public canMessage: boolean | undefined;
+    /**
+     * If the authenticated user can follow the user
+     */
+    public canFollow: boolean | undefined;
+    /**
+     * If the authenticated user can trade with the user
+     */
+    public canTrade: boolean | undefined;
+    /**
+     * If the authenticated user can see the favorites of the user
+     */
+    public canSeeFavorites: boolean | undefined;
+    /**
+     * If the authenticated user can see the inventory of the user
+     */
+    public canSeeInventory: boolean | undefined;
+    /**
+     * If the authenticated user and the user are friends
+     */
+    public areFriends: boolean | undefined;
+    /**
+     * If the authenticated user can send a friend request to the user
+     */
+    public canSendFriendRequest: boolean | undefined;
+    /**
+     * If the user has sent a friend request to the authenticated user (that is active/pending)
+     */
+    public incomingFriendRequest: boolean | undefined;
+    /**
+     * If the authenticated user has sent a friend request (that is active/pending) to the user
+     */
+    public sentFriendRequest: boolean | undefined;
+    /**
+     * If the user has sent a friend request to the authenticated user,
+     * this will be defined
+     */
+    public friendRequestId: string | number | undefined;
+    /**
+     * If the authenticated user has blocked the user
+     */
+    public isBlocked: boolean | undefined;
+    /**
+     * If the user has blocked the (self) authenticated user
+     */
+    public isSelfBlocked: boolean;
+    /**
+     * If the authenticated user is following the user
+     */
+    public isFollowing: boolean;
 
     constructor(client: Client, data: any);
 }
@@ -232,112 +318,282 @@ class UserBase {
 
     constructor(client: Client);
 
-    public update(): Promise<User>;
+    /**
+     * Gets an updated version of the user data (refreshes)
 
+     */
+    public refresh(): Promise<User>;
+
+    /**
+     * Gets the user's groups
+
+     */
     public getGroups(): Promise<UserGroup[]>
 
+    /**
+     * Accepts the friend request from the user (if any)
+
+     */
     public acceptFriendRequest(): Promise<boolean>;
 
+    /**
+     * Declines the friend request from the user (if any)
+
+     */
     public declineFriendRequest(): Promise<boolean>;
 
+    /**
+     * Sends a friend request to the user
+
+     */
     public sendFriendRequest(): Promise<boolean>;
 
+    /**
+     * Gets the user's friends count
+
+     */
     public getFriendsCount(): Promise<number>;
 
+    /**
+     * Unfriends the user
+
+     */
     public unfriend(): Promise<boolean>;
 
-    public isFollowing(user: UserIdentifier): Promise<unknown>;
+    /**
+     * Checks if this user is following the specified user (in the params)
 
+     */
+    public isFollowingUser(user: UserIdentifier): Promise<unknown>;
+
+    /**
+     * Follows this user
+     */
     public follow(): Promise<boolean>;
 
+    /**
+     * Unfollows this user
+     */
     public unfollow(): Promise<boolean>;
 
+    /**
+     * Checks if this user owns the asset specified in the params
+     */
     public ownsAsset(assetId: AnyIdentifier): Promise<boolean>;
 
+    /**
+     * Blocks this user
+
+     */
     public block(): Promise<boolean>;
 
+    /**
+     * Unblocks this user
+
+     */
     public unblock(): Promise<boolean>;
 
+    /**
+     * Checks if this user can manage the specified assetId provided in the params
+     * @param {AnyIdentifier} asset The asset to see if they can manage
+
+     */
     public canManageAsset(asset: AnyIdentifier): Promise<boolean>;
 
+    /**
+     * Awards a badge to this user
+     * @param badge The badge (id) to award
+     * @param place The place (id) to award from
+     */
     public awardBadge(badge: AnyIdentifier, place: AnyIdentifier): Promise<boolean>;
 
+    /**
+     * Gets this user's avatar
+     */
     public getAvatar(): Promise<unknown>;
 
+    /**
+     * Gets the assets this user is wearing
+     */
     public getWearingAssets(): Promise<unknown>;
 
+    /**
+     * Gets the outfits of this user
+     */
     public getOutfits(options?: unknown): Promise<unknown>;
 
+    /**
+     * Gets this user's badges
+     */
     public getBadges(options?: GenericFilterOptions): Promise<unknown>;
 
+    /**
+     * Gets the timestamps from when the specified badges were given/awarded
+     */
     public getBadgesTimestamps(badges: AnyIdentifier[]): Promise<unknown>;
 
+    /**
+     * Gets the bundles owned by this user
+     */
     public getOwnedBundles(options: GenericFilterOptions): Promise<unknown>;
 
+    /**
+     * Adds this user to a chat conversation
+     */
     public addToChatConversation(conversation: ChatConversationIdentifier): Promise<unknown>;
 
+    /**
+     * Removes this user from a chat conversation
+     */
     public removeFromChatConversation(conversation: ChatConversationIdentifier): Promise<unknown>;
 
+    /**
+     * Creates a group conversation with this user, and possibly other users specified in the params
+     */
     public createGroupChatConversation(others?: UserIdentifier[]): Promise<unknown>;
 
+    /**
+     * Starts a chat conversation with this user
+     */
     public startChatConversation(): Promise<unknown>;
 
+    /**
+     * Gets the tag this user is associated with
+     */
     public getTag(): Promise<unknown>;
 
+    /**
+     * Sets a pending tag, which means a tag this user should be associated with / called by, that gets approved
+     * when they accept your friend request.
+     */
     public setPendingTag(tag: any): Promise<unknown>;
 
+    /**
+     * Sets a tag for this user you want to associate them with / call them by
+     */
     public setTag(tag: any): Promise<unknown>;
 
+    /**
+     * Removes the tag of this user
+     */
     public removeTag(): Promise<unknown>;
 
+    /**
+     * Removes this user from team create from the universe specified in the params
+     */
     public removeFromTeamCreate(universe: AnyIdentifier): Promise<unknown>;
 
+    /**
+     * Adds this user to team create on the universe specified in the params
+     */
     public addToTeamCreate(universe: AnyIdentifier): Promise<unknown>;
 
+    /**
+     * Gets the copies this user has for a given asset
+     */
     public getResellableAssetCopies(assetId: AnyIdentifier): Promise<unknown>;
 
+    /**
+     * Gets the followers this user has (not count, but actual users)
+     */
     public getFollowers(options: GenericFilterOptions): Promise<unknown>;
 
+    /**
+     * Gets the followers count of this user
+     */
     public getFollowersCount(): Promise<number>;
 
+    /**
+     * Gets the friends (not count, but actual users) this user has
+     */
     public getFriends(): Promise<unknown>;
 
+    /**
+     * Gets the friends count this user has
+     */
     public getFriendsCount(): Promise<number>;
 
+    /**
+     * Gets the games this user has
+     */
     public getGames(): Promise<unknown>;
 
+    /**
+     * Gets their (possible) join request for the specified group in the params
+     */
     public getGroupJoinRequest(group: GroupIdentifier): Promise<unknown>;
 
+    /**
+     * Accepts this user's join request for a group specified in the params
+     */
     public acceptGroupJoinRequest(group: GroupIdentifier): Promise<unknown>;
 
+    /**
+     * Declines this user's join request for a group specified in the params
+     */
     public declineGroupJoinRequest(group: GroupIdentifier): Promise<unknown>;
 
+    /**
+     * Makes this user a group owner for the specified group in the params
+     */
     public setGroupOwnerFor(group: GroupIdentifier): Promise<unknown>;
 
+    /**
+     * Updates the member (roles / rank) in the specified group in the params
+     */
     public updateMemberInGroup(group: GroupIdentifier, role: GroupRoleIdentifier): Promise<unknown>;
 
+    /**
+     * Deletes this user's wall posts in the specified group in the params
+     */
     public deleteGroupWallPosts(group: GroupIdentifier): Promise<unknown>;
 
+    /**
+     * Gets this user's primary group
+     */
     public getPrimaryGroup(): Promise<UserGroup>;
 
+    /**
+     * Gets this user's owned items
+     */
     public getOwnedItems(options: unknown): Promise<unknown>;
 
+    /**
+     * Gets this user's asset inventory
+     * @param options
+     */
     public getAssetInventory(options: unknown): Promise<unknown>;
 
+    /**
+     * Not sure what this does
+     */
     public validatePremiumMembership(): Promise<unknown>;
 
+    /**
+     * Gets the presence of this user
+     */
     public getPresence(): Promise<unknown>;
 
+    /**
+     * Gets a headshot image of this user
+     */
     public getAvatarHeadshot(options: unknown): Promise<unknown>;
 }
 
 class GroupBase {
     public client: Client;
+    public; //TODO: CONTINUE HERE
 
     constructor(client: Client, data: any);
 
+    /**
+     * Updates the data about this group
+     */
     public refresh(): Promise<>; // Fetches new information from the Roblox Web API
 
+    /**
+     * Gets the settings for the group
+     */
     public getSettings(): Promise<GroupSettings>;
 
     public updateSettings(): Promise<GroupConfigureSetting>;
@@ -437,8 +693,6 @@ class GroupBase {
     public getMyPermissions(): Promise<>;
 
     public getGames(options: GenericFilterOptions): Promise<unknown>;
-
-    public //TODO: CONTINUE HERE
 
     public on(event: "joinRequest", listener: (request: GroupJoinRequest, group: Group) => void): this;
     public on(event: "wallPost", listener: (post: GroupWallPost, group: Group) => void): this;
@@ -859,9 +1113,7 @@ interface Constants {
 }
 
 interface Structures {
-    chat: {
-
-    };
+    chat: {};
     group: {
         Base: GroupBase;
         JoinRequest: GroupJoinRequest;
@@ -876,9 +1128,7 @@ interface Structures {
         Base: UserBase;
         Partial: UserPartial;
     };
-    message: {
-
-    };
+    message: {};
 }
 
 // -- Types

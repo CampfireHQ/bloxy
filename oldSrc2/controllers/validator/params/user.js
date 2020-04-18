@@ -43,7 +43,7 @@ const userIdentifiers = Joi.array().custom(value => {
 module.exports = {
 	validate: {
 		identifier: a => validate(a, userIdentifier),
-		identifiers: a => validate(a, userIdentifiers),
+		identifiers: a => validate(a, userIdentifiers)
 	},
 	types: {
 		userIdentifier,

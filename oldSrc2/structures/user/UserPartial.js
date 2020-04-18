@@ -7,6 +7,8 @@ class UserPartial extends UserBase {
 	 */
 	constructor (client, data) {
 		super(client, data);
+
+		this.name = client.util.valueExtractor(data, "usernames");
 	}
 }
 
