@@ -11,9 +11,8 @@ jobs:
       - node/with-cache:
           steps:
             - run: npm install
-            - run: sudo npm install typescript -g
-            - run: tsc
-            - run: npm run test-with-coverage
+            - run: npm run build
+            - run: npm run test
 workflows:
   build-and-test:
     jobs:
