@@ -24,7 +24,7 @@ class RESTController {
         this.init();
     }
 
-    updateXCSRFToken () {
+    updateXCSRFToken (token?: string) {
         if (token) {
             this.setXCSRFToken(token);
         }
@@ -42,6 +42,8 @@ class RESTController {
             // Refresh token
             return this.updateXCSRFToken();
         }
+
+        return this.options.xcsrf;
     }
 
     createCookie (cookieOptions: cookieOptions): Cookie {
@@ -81,7 +83,7 @@ class RESTController {
     }
 
     init (): void {
-
+        console.log("init called");
     }
 }
 

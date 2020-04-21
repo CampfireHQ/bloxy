@@ -20,12 +20,12 @@ export default class Request {
         };
     }
 
-    send () {
+    async send () {
         if (!this.options) {
             throw new Error("Options must be provided when sending a request");
         }
 
-        const requester = this.controller.requester;
-        this.options.xcsrf = this.controller.getXCSRFToken();
+        // const requester = this.controller.requester;
+        this.options.xcsrf = await this.controller.getXCSRFToken();
     }
 }

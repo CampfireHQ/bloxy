@@ -1,6 +1,4 @@
 import got from "got";
-import Client from "../../client";
-import Request from "./Request";
 
 
 export declare type constructorOptions = object & {
