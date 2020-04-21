@@ -1,19 +1,19 @@
 {
+  "root": true,
+  "parser": "@typescript-eslint/parser",
   "env": {
     "es6": true,
     "node": true
   },
   "extends": [
     "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
     "plugin:security/recommended"
   ],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
-  },
-  "parserOptions": {
-    "ecmaVersion": 2018,
-    "sourceType": "module"
   },
   "rules": {
     "linebreak-style": [
@@ -116,7 +116,7 @@
     "func-names": "error",
     "func-name-matching": "error",
     "func-style": ["error", "declaration", { "allowArrowFunctions": true }],
-    "indent": ["error", "tab"],
+    "indent": ["error", 4],
     "key-spacing": "error",
     "keyword-spacing": "error",
     "max-depth": "error",
@@ -171,6 +171,7 @@
     "yield-star-spacing": "error"
   },
   "plugins": [
+    "@typescript-eslint",
     "security"
   ]
 }

@@ -1,7 +1,3 @@
-export interface clientConstructorOptions {
+export interface ClientConstructorOptions {}
 
-}
-
-export const defaultClientConstructorOptions = {
-
-};
+export const defaultClientConstructorOptions = {};
