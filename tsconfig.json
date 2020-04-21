@@ -86,6 +86,8 @@
   },
   "compileOnSave": true,
   "exclude": [
+    "dist",
+    "node_modules",
     "oldSrc",
     "oldSrc2",
     "tests",
