@@ -1,34 +1,47 @@
 import Client from "../../client/Client";
 import { Cookie, CookieJar } from "tough-cookie";
-import { constructorOptions, cookieOptions, defaultConstructorOptions } from "./RESTInterfaces";
+import {
+    baseCreateCookieOptions, baseRESTControllerConstructor,
+    CreateCookieOptions,
+    RequestConstructor,
+    ResponseConstructor,
+    RESTControllerConstructor
+} from "./RESTInterfaces";
 import updateXCSRFToken from "./lib/updateXCSRFToken";
+import Request from "./Request";
+import Response from "./Response";
 
 
 class RESTController {
     public client: Client;
-    public options: constructorOptions;
-    public requester: Function;
+    public options: RESTControllerConstructor;
     public jar: CookieJar;
     public responseHandlers: Function[];
     public requestHandlers: Function[];
 
 
-    constructor (client: Client, options: constructorOptions = defaultConstructorOptions) {
+    constructor (client: Client, options: RESTControllerConstructor = baseRESTControllerConstructor) {
         this.client = client;
-        this.options = options;
-        this.requester = this.options.requester;
         this.jar = new CookieJar();
         this.responseHandlers = [];
         this.requestHandlers = [];
+        this.options = baseRESTControllerConstructor;
 
+        this.setOptions(options);
         this.init();
     }
 
-    updateXCSRFToken (token?: string) {
-        if (token) {
-            this.setXCSRFToken(token);
-        }
+    request (options: { request: RequestConstructor; response: ResponseConstructor }): unknown {
+        const request = new Request(this);
+        const response = new Response(this);
 
+        request.setOptions(options.request);
+        response.setOptions(options.response);
+
+        return request.send().then((responseData: object) => response.parse(responseData));
+    }
+
+    fetchXCSRFToken (): Promise<string> {
         return updateXCSRFToken(this);
     }
 
@@ -37,17 +50,21 @@ class RESTController {
         this.options.xcsrfSet = Date.now();
     }
 
-    getXCSRFToken (): string | Promise<string> {
+    async getXCSRFToken (): Promise<string | undefined> {
         if (!this.options.xcsrf || (Date.now() - (this.options.xcsrfSet || 0)) >= (5 * 60 * 1000)) {
             // Refresh token
-            return this.updateXCSRFToken();
+            const token = await this.fetchXCSRFToken();
+            this.setXCSRFToken(token);
         }
 
         return this.options.xcsrf;
     }
 
-    createCookie (cookieOptions: cookieOptions): Cookie {
-        return new Cookie(cookieOptions);
+    createCookie (cookieOptions: CreateCookieOptions): Cookie {
+        return new Cookie({
+            ...baseCreateCookieOptions,
+            ...cookieOptions
+        });
     }
 
     addCookie (cookie: Cookie, domain: string, setCookieOptions?: object): Cookie {
@@ -80,6 +97,15 @@ class RESTController {
 
     getUserAgent (): string | undefined {
         return this.options.userAgent;
+    }
+
+    setOptions (options: RESTControllerConstructor): RESTControllerConstructor {
+        this.options = {
+            ...baseRESTControllerConstructor,
+            ...options
+        };
+
+        return this.options;
     }
 
     init (): void {

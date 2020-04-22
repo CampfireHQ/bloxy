@@ -1,22 +1,28 @@
 import EventEmitter from "events";
 import RESTController from "../controllers/rest";
-import { ClientConstructorOptions } from "./ClientInterface";
-import lodash from "lodash";
-
-const defaultConstructorOptions = {};
+import { ClientConstructor, baseClientConstructor } from "./ClientInterface";
 
 export default class ClientBase extends EventEmitter {
-    public options: ClientConstructorOptions;
+    public options: ClientConstructor;
     public rest: RESTController;
 
-    constructor (options: ClientConstructorOptions = defaultConstructorOptions) {
+    constructor (options: ClientConstructor = baseClientConstructor) {
         super();
 
         this.options = options;
         this.rest = new RESTController(this);
+
+        this.init();
     }
 
-    updateOptions = (options: ClientConstructorOptions): void => {
-        this.options = lodash.merge(defaultConstructorOptions, options);
+    updateOptions = (options: ClientConstructor): void => {
+        this.options = {
+            ...baseClientConstructor,
+            ...options
+        };
     };
+
+    init () {
+        if (this.options.rest) this.rest.setOptions(this.options.rest);
+    }
 }

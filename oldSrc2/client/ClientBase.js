@@ -10,14 +10,14 @@ const controllers = require("../controllers");
 class ClientBase extends EventEmitter {
 	/**
 	 * The ClientBase provides the apis instance with methods under the hood
-	 * @param {ClientConstructorOptions} options The options used to initiate the apis with
+	 * @param {ClientConstructor} options The options used to initiate the apis with
 	 */
 	constructor (options) {
 		super();
 
 		/**
 		 * The options the apis was initiated with
-		 * @type {ClientConstructorOptions}
+		 * @type {ClientConstructor}
 		 */
 		this.options = options;
 		this.updateOptions(options);
@@ -88,7 +88,7 @@ class ClientBase extends EventEmitter {
 
 	/**
 	 * Updates this client's options
-	 * @param {ClientConstructorOptions} options The options to update
+	 * @param {ClientConstructor} options The options to update
 	 */
 	updateOptions (options) {
 		this.options = lodash.merge({

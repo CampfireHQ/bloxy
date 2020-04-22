@@ -1,11 +1,8 @@
 import ClientBase from "./ClientBase";
-import { ClientConstructorOptions, defaultClientConstructorOptions } from "./ClientInterface";
+import { ClientConstructor, baseClientConstructor } from "./ClientInterface";
 
 export default class Client extends ClientBase {
-    public options: ClientConstructorOptions;
-
-    constructor (options: ClientConstructorOptions = defaultClientConstructorOptions) {
-        super();
-        this.options = options;
+    constructor (options: ClientConstructor = baseClientConstructor) {
+        super(options);
     }
 }

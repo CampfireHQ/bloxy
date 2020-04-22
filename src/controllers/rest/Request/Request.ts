@@ -1,11 +1,11 @@
 import RESTController from "../RESTController";
-import { RequestOptions, defaultRequestOptions } from "./RequestInterface";
+import { RequestConstructor, baseRequestConstructor } from "../RESTInterfaces";
 import Client from "../../../client";
 
 export default class Request {
     public controller: RESTController;
     public client: Client;
-    public options: RequestOptions | undefined;
+    public options: RequestConstructor | undefined;
 
     constructor (restController: RESTController) {
         this.controller = restController;
@@ -13,19 +13,21 @@ export default class Request {
         this.options = undefined;
     }
 
-    setOptions (options: RequestOptions): void {
+    setOptions (options: RequestConstructor): void {
         this.options = {
-            ...defaultRequestOptions,
+            ...baseRequestConstructor,
             ...options
         };
     }
 
-    async send () {
+    async send (): Promise<object> {
         if (!this.options) {
             throw new Error("Options must be provided when sending a request");
         }
 
         // const requester = this.controller.requester;
         this.options.xcsrf = await this.controller.getXCSRFToken();
+
+        return {};
     }
 }

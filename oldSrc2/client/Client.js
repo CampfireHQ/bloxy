@@ -7,7 +7,7 @@ const ClientBase = require("./ClientBase");
 class Client extends ClientBase {
 	/**
 	 * Creates a new bloxy apis
-	 * @param {ClientConstructorOptions} options The options used to initiate a apis with
+	 * @param {ClientConstructor} options The options used to initiate a apis with
 	 */
 	constructor (options) {
 		super(options);

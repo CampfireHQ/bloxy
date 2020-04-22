@@ -1,17 +1,25 @@
 import Client from "../../../client";
 import Request from "../Request";
 import lodash from "lodash";
-import { ResponseConstructorOptions, ResponseOptions } from "./ResponseInterface";
+import { ResponseConstructor } from "../RESTInterfaces";
+import RESTController from "../RESTController";
 
 
 export default class Response {
+    public controller: RESTController;
     public client: Client;
-    public request: Request;
-    public data: { [key: string]: unknown };
-    public options: ResponseOptions;
+    public request: Request | undefined;
+    public data: { [key: string]: unknown } | undefined;
+    public options: ResponseConstructor | undefined;
 
-    constructor (options: ResponseConstructorOptions) {
-        this.client = options.client;
+    constructor (restController: RESTController) {
+        this.controller = restController;
+        this.client = this.controller.client;
+        this.options = undefined;
+        this.data = undefined;
+    }
+
+    setOptions (options: ResponseConstructor): void {
         this.request = options.request;
         this.data = options.data;
         this.options = lodash.merge({
@@ -27,6 +35,10 @@ export default class Response {
                 body: true,
                 captcha: true
             }
-        }, options.options || {});
+        }, options || {});
+    }
+
+    parse (data: unknown): object {
+        return { data };
     }
 }
